@@ -26,6 +26,10 @@ static void glfw_error_callback(int error, const char* description)
 
 int main(int, char**)
 {
+#if defined(IMGUI_IMPL_OPENGL_ES2)
+    fprintf(stderr, "IMGUI_IMPL_OPENGL_ES2\n");
+#endif
+
     // Setup window
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
@@ -34,12 +38,14 @@ int main(int, char**)
     // Decide GL+GLSL versions
 #if defined(IMGUI_IMPL_OPENGL_ES2)
     // GL ES 2.0 + GLSL 100
+    fprintf(stderr, "GL ES 2.0 + GLSL 100\n");
     const char* glsl_version = "#version 100";
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
 #elif defined(__APPLE__)
     // GL 3.2 + GLSL 150
+    fprintf(stderr, "GL 3.2 + GLSL 150\n");
     const char* glsl_version = "#version 150";
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -47,6 +53,7 @@ int main(int, char**)
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
 #else
     // GL 3.0 + GLSL 130
+    fprintf(stderr, "GL 3.0 + GLSL 130\n");
     const char* glsl_version = "#version 130";
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
@@ -147,6 +154,15 @@ int main(int, char**)
             ImGui::Text("counter = %d", counter);
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            ImGui::End();
+        }
+
+        {
+            static int c = 0;
+            ImGui::Begin("Hi!");
+            if (ImGui::Button("Button"))
+                c++;
+            ImGui::Text("counter = %d", c);
             ImGui::End();
         }
 
